@@ -30,10 +30,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Playwright: screenshots and any Playwright output go in `.playwright-mcp/` (gitignored).
 - Context7: use it to fetch current framework docs instead of relying on training data.
 
+## Agents
+
+- `spec-verifier`: Verifies acceptance criteria of a spec file. Reviews implementation against each criterion, fixes code/spec issues found, and marks checkboxes. Uses Playwright MCP with vision to compare screenshots against references, and Context7 MCP to validate Next.js best practices.
+
 ## Spec Driven Development - Skills
 
 - /spec Usaremos esta habilidad para crear las especificaciones.
 - /spec-impl Usaremos esta skill para hacer las implementaciones.
+- /verify-spec Usaremos este comando para verificar los criterios de aceptación de una spec.
 
 ## Reglas de código
 
