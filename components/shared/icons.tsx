@@ -110,3 +110,19 @@ export function PhotoIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function MenuIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} strokeWidth={2} {...props}>
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
+export function CloseIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} strokeWidth={2} {...props}>
+      <path d="M18 6 6 18M6 6 18 18" />
+    </svg>
+  );
+}
