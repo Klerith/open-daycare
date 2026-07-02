@@ -1,6 +1,6 @@
 # SPEC 01 — Home Feed estático (calco de feed.dc.html)
 
-> **Estado:** Borrador
+> **Estado:** Aprobado
 > **Depende de:** — (primera spec)
 > **Fecha:** 2026-07-02
 > **Objetivo:** Implementar el home (`/`) como calco visual del feed de la guardería (`references/pantallas/feed.dc.html`) con datos mock, sin autenticación ni base de datos, y sidebar responsive colapsable en mobile.
@@ -98,7 +98,6 @@ Convenciones:
 6. **Atómicos del home.** Crear en `components/home/`: `FeedHeader.tsx` (eyebrow + h1 + subtítulo), `Composer.tsx` (caja `Compartí un momento…`), `FeedDivider.tsx` (`PUBLICADO HOY` + línea) y `PhotoPlaceholder.tsx` (caja dashed).
 7. **PostCard.** Crear `components/home/PostCard.tsx` que renderiza avatar, nombre+tiempo, badge (color por `type`), audiencia, texto, `PhotoPlaceholder` si aplica, y footer (corazones/comentarios/`Editar`). Compone `PhotoPlaceholder`.
 8. **Ensamblar `app/page.tsx`.** Layout `flex`: `Sidebar` (desktop) + `MobileNav` (mobile) + `<main>` scrollable con `FeedHeader`, `Composer`, `FeedDivider` y la lista de `PostCard` mapeada desde `app/_data/mock.ts`. _Prueba: comparar contra `references/pantallas/feed.dc.html` y `references/screenshots/feed.png`._
-9. **Verificación.** `npm run lint` y `npx tsc --noEmit` sin errores; revisión visual pixel-perfect y del drawer en viewport `< md`.
 
 ## Acceptance criteria
 
