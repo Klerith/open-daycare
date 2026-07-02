@@ -34,3 +34,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - /spec Usaremos esta habilidad para crear las especificaciones.
 - /spec-impl Usaremos esta skill para hacer las implementaciones.
+
+## Reglas de código
+
+- Usar código limpio, nombres, funciones, variables, etc. en inglés.
