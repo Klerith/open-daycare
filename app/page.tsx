@@ -9,8 +9,8 @@ import { PostCard } from "@/components/home/PostCard";
 export default function Home() {
   return (
     <div className="flex flex-1 min-h-screen bg-canvas">
-      <Sidebar />
-      <MobileNav />
+      <Sidebar pathname="/" />
+      <MobileNav pathname="/" />
       <main className="flex-1 min-w-0 h-screen overflow-y-auto">
         <div className="max-w-[760px] w-full mx-auto px-5 md:px-10 pt-16 md:pt-[34px] pb-20">
           <FeedHeader />

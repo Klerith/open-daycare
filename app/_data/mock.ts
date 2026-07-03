@@ -26,9 +26,10 @@ export interface FeedPost {
 }
 
 export interface NavItem {
-  label: string; // "Feed" | "Niños" | "Avisos" | "Mi cuenta"
+  label: string;
   icon: NavIcon;
   active: boolean;
+  href: string;
 }
 
 export interface SidebarUser {
@@ -46,11 +47,21 @@ export const sidebarUser: SidebarUser = {
 export const roomSubtitle: string = "12 niños · martes 17 jun";
 
 export const navItems: NavItem[] = [
-  { label: "Feed", icon: "home", active: true },
-  { label: "Niños", icon: "kids", active: false },
-  { label: "Avisos", icon: "bell", active: false },
-  { label: "Mi cuenta", icon: "user", active: false },
+  { label: "Feed", icon: "home", active: false, href: "/" },
+  { label: "Niños", icon: "kids", active: false, href: "/kids" },
+  { label: "Avisos", icon: "bell", active: false, href: "#" },
+  { label: "Mi cuenta", icon: "user", active: false, href: "#" },
 ];
+
+export function getActiveNav(pathname: string): NavItem[] {
+  const items = navItems.map((item) => ({ ...item, active: false }));
+  if (pathname === '/' || pathname === '') {
+    items[0].active = true;
+  } else if (pathname.startsWith('/kids')) {
+    items[1].active = true;
+  }
+  return items;
+}
 
 export const posts: FeedPost[] = [
   {
