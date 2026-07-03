@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react';
 import { SidebarContent } from '@/components/shared/Sidebar';
 import { CloseIcon, MenuIcon } from '@/components/shared/icons';
 
-export function MobileNav() {
+interface MobileNavProps {
+  pathname?: string;
+}
+
+export function MobileNav({ pathname }: MobileNavProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -51,7 +55,7 @@ export function MobileNav() {
             >
               <CloseIcon className="w-4 h-4" />
             </button>
-            <SidebarContent />
+            <SidebarContent pathname={pathname} />
           </aside>
         </div>
       )}

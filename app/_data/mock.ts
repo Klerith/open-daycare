@@ -46,11 +46,21 @@ export const sidebarUser: SidebarUser = {
 export const roomSubtitle: string = "12 niños · martes 17 jun";
 
 export const navItems: NavItem[] = [
-  { label: "Feed", icon: "home", active: true },
+  { label: "Feed", icon: "home", active: false },
   { label: "Niños", icon: "kids", active: false },
   { label: "Avisos", icon: "bell", active: false },
   { label: "Mi cuenta", icon: "user", active: false },
 ];
+
+export function getActiveNav(pathname: string): NavItem[] {
+  const items = navItems.map((item) => ({ ...item, active: false }));
+  if (pathname === '/' || pathname === '') {
+    items[0].active = true;
+  } else if (pathname.startsWith('/kids')) {
+    items[1].active = true;
+  }
+  return items;
+}
 
 export const posts: FeedPost[] = [
   {

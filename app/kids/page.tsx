@@ -20,8 +20,8 @@ export default function KidsPage() {
 
   return (
     <div className="flex flex-1 min-h-screen bg-canvas">
-      <Sidebar />
-      <MobileNav />
+      <Sidebar pathname="/kids" />
+      <MobileNav pathname="/kids" />
       <main className="flex-1 min-w-0 h-screen overflow-y-auto">
         <div className="max-w-[880px] w-full mx-auto px-5 md:px-10 pt-16 md:pt-[34px] pb-20">
           <div className="flex items-end justify-between gap-4 mb-[22px]">

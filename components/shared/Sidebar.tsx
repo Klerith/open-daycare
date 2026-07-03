@@ -1,4 +1,4 @@
-import { navItems, sidebarUser } from '@/app/_data/mock';
+import { getActiveNav, sidebarUser } from '@/app/_data/mock';
 import {
   BellIcon,
   HomeIcon,
@@ -17,7 +17,9 @@ const navIcon: Record<NavIcon, typeof HomeIcon> = {
   user: UserIcon,
 };
 
-export function SidebarContent() {
+export function SidebarContent({ pathname }: { pathname?: string }) {
+  const items = pathname ? getActiveNav(pathname) : [];
+
   return (
     <>
       <a href="#" className="flex items-center gap-[11px] pt-1 px-2 pb-[22px]">
@@ -43,7 +45,7 @@ export function SidebarContent() {
       </a>
 
       <nav className="flex flex-col gap-1 flex-1">
-        {navItems.map((item) => {
+        {items.map((item) => {
           const Icon = navIcon[item.icon];
           return (
             <a
@@ -90,10 +92,10 @@ export function SidebarContent() {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ pathname }: { pathname?: string }) {
   return (
     <aside className="hidden md:flex flex-col w-[248px] shrink-0 bg-card border-r border-line sticky top-0 h-screen py-6 px-4">
-      <SidebarContent />
+      <SidebarContent pathname={pathname} />
     </aside>
   );
 }

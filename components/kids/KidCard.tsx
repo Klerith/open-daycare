@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import type { Kid } from '@/app/_data/kids';
-import { ALLERGY_BADGE, ALLERGY_LABEL, parentCountLabel } from '@/app/_data/kids';
+import {
+  ALLERGY_BADGE,
+  ALLERGY_LABEL,
+  parentCountLabel,
+} from '@/app/_data/kids';
 import { ChevronRightIcon } from '@/components/shared/icons';
 
 interface KidCardProps {
