@@ -373,24 +373,24 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] `http://localhost:3000/kids` renderiza la lista de niños con el mismo diseño que `ninos.dc.html`.
-- [ ] El sidebar muestra `Niños` como activo cuando se está en `/kids` o `/kids/[id]`.
-- [ ] El sidebar muestra `Feed` como activo cuando se está en `/`.
-- [ ] El buscador filtra niños por nombre en tiempo real (frontend, sin backend).
-- [ ] Se muestran 8 niños en un grid de 2 columnas.
-- [ ] Cada tarjeta muestra avatar con inicial, nombre, edad, padres vinculados, y badge de alergia o flecha o `VINCULAR`.
-- [ ] Hover en tarjeta produce `translateY(-2px)` y cambio de borde.
-- [ ] Click en una tarjeta navega a `/kids/[id]`.
-- [ ] `http://localhost:3000/kids/mateo-fernandez` renderiza el perfil con el mismo diseño que `perfil-nino.dc.html`.
-- [ ] El perfil muestra avatar grande, nombre, edad/sala, botón Editar (placeholder).
-- [ ] El perfil muestra la tarjeta de alergias con ícono y texto.
-- [ ] El perfil muestra la tabla de datos (fecha nacimiento, sala, ingreso).
-- [ ] El perfil muestra la sección `PADRES VINCULADOS` con badges de estado (ACTIVA/PENDIENTE).
-- [ ] El perfil muestra el botón `Resumen del día` y el link `Vincular otro padre` como placeholders.
-- [ ] El link `Volver a Niños` en el perfil navega a `/kids`.
-- [ ] `npm run lint` pasa sin errores.
-- [ ] `npx tsc --noEmit` pasa sin errores.
-- [ ] No hay errores en la consola del navegador al cargar ambas páginas.
+- [x] `http://localhost:3000/kids` renderiza la lista de niños con el mismo diseño que `ninos.dc.html`.
+- [x] El sidebar muestra `Niños` como activo cuando se está en `/kids` o `/kids/[id]`.
+- [x] El sidebar muestra `Feed` como activo cuando se está en `/`.
+- [x] El buscador filtra niños por nombre en tiempo real (frontend, sin backend).
+- [x] Se muestran 8 niños en un grid de 2 columnas.
+- [x] Cada tarjeta muestra avatar con inicial, nombre, edad, padres vinculados, y badge de alergia o flecha o `VINCULAR`.
+- [x] Hover en tarjeta produce `translateY(-2px)` y cambio de borde.
+- [x] Click en una tarjeta navega a `/kids/[id]`.
+- [x] `http://localhost:3000/kids/mateo-fernandez` renderiza el perfil con el mismo diseño que `perfil-nino.dc.html`.
+- [x] El perfil muestra avatar grande, nombre, edad/sala, botón Editar (placeholder).
+- [x] El perfil muestra la tarjeta de alergias con ícono y texto.
+- [x] El perfil muestra la tabla de datos (fecha nacimiento, sala, ingreso).
+- [x] El perfil muestra la sección `PADRES VINCULADOS` con badges de estado (ACTIVA/PENDIENTE).
+- [x] El perfil muestra el botón `Resumen del día` y el link `Vincular otro padre` como placeholders.
+- [x] El link `Volver a Niños` en el perfil navega a `/kids`.
+- [x] `npm run lint` pasa sin errores.
+- [x] `npx tsc --noEmit` pasa sin errores.
+- [x] No hay errores en la consola del navegador al cargar ambas páginas.
 
 ## Decisions
 
