@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getActiveNav, sidebarUser } from '@/app/_data/mock';
 import {
   BellIcon,
@@ -22,7 +23,7 @@ export function SidebarContent({ pathname }: { pathname?: string }) {
 
   return (
     <>
-      <a href="#" className="flex items-center gap-[11px] pt-1 px-2 pb-[22px]">
+      <Link href="/" className="flex items-center gap-[11px] pt-1 px-2 pb-[22px]">
         <span className="w-[38px] h-[38px] rounded-[12px] bg-[linear-gradient(155deg,#F8C3A8,#F2937A)] flex items-center justify-center shrink-0 text-white">
           <SunIcon className="w-[21px] h-[21px]" />
         </span>
@@ -34,7 +35,7 @@ export function SidebarContent({ pathname }: { pathname?: string }) {
             Sala Soles
           </span>
         </span>
-      </a>
+      </Link>
 
       <a
         href="#"
@@ -48,9 +49,9 @@ export function SidebarContent({ pathname }: { pathname?: string }) {
         {items.map((item) => {
           const Icon = navIcon[item.icon];
           return (
-            <a
+            <Link
               key={item.label}
-              href="#"
+              href={item.href}
               className={
                 'flex items-center gap-3 py-[11px] px-3 rounded-[12px] text-[14.5px] ' +
                 (item.active
@@ -60,7 +61,7 @@ export function SidebarContent({ pathname }: { pathname?: string }) {
             >
               <Icon className="w-[19px] h-[19px]" />
               {item.label}
-            </a>
+            </Link>
           );
         })}
       </nav>
@@ -78,14 +79,14 @@ export function SidebarContent({ pathname }: { pathname?: string }) {
               {sidebarUser.role}
             </span>
           </span>
-          <a
+          <Link
             href="#"
             title="Cerrar sesión"
             aria-label="Cerrar sesión"
             className="shrink-0 w-8 h-8 rounded-[10px] bg-canvas text-[#94887B] flex items-center justify-center"
           >
             <LogoutIcon className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </div>
     </>

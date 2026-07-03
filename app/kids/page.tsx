@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { kids, parentCountLabel } from '@/app/_data/kids';
+import { kids } from '@/app/_data/kids';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileNav } from '@/components/shared/MobileNav';
 import { SearchIcon } from '@/components/shared/icons';

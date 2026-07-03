@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getKidById, ALLERGY_BADGE, ALLERGY_LABEL, PARENT_STATUS_BADGE, PARENT_STATUS_LABEL } from '@/app/_data/kids';
+import { getKidById, PARENT_STATUS_BADGE, PARENT_STATUS_LABEL } from '@/app/_data/kids';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileNav } from '@/components/shared/MobileNav';
 import { ChevronLeftIcon, AlertTriangleIcon, EditIcon } from '@/components/shared/icons';
@@ -44,8 +44,6 @@ export default async function KidProfilePage({ params }: KidProfileProps) {
   }
 
   const hasAllergies = kid.allergies.length > 0;
-  const firstAllergy = hasAllergies ? kid.allergies[0] : 'none';
-  const allergyBadge = ALLERGY_BADGE[firstAllergy];
 
   return (
     <div className="flex flex-1 min-h-screen bg-canvas">
