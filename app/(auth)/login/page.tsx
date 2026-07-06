@@ -4,7 +4,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] bg-[#FBF4EC]">
       {/* Left panel */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#F6A98E] via-[#F2937A] to-[#EC7E62] flex flex-col justify-between p-14 sm:p-14 text-white">
+      <div className="relative overflow-hidden bg-linear-to-br from-[#F6A98E] via-[#F2937A] to-[#EC7E62] flex flex-col justify-between p-14 sm:p-14 text-white">
         {/* Decorative circles */}
         <div className="absolute w-[420px] h-[420px] rounded-full bg-white/12 -top-[140px] -right-[120px]" />
         <div className="absolute w-[300px] h-[300px] rounded-full bg-white/10 -bottom-[110px] -left-[80px]" />
@@ -40,6 +40,32 @@ export default function LoginPage() {
           <h2 className="font-head font-semibold text-3xl mb-1 text-[#3F362E]">Iniciar sesión</h2>
           <p className="mb-7 text-[#94887B] text-sm">Ingresá para ver el día de hoy.</p>
 
+          {/* Role selection */}
+          <div className="text-xs font-bold tracking-wider text-[#94887B] mb-2">INGRESO COMO</div>
+          <div className="flex gap-2.5 mb-5">
+            {/* Personal button */}
+            <div
+              className="flex-1 flex items-center gap-2.5 p-3.5 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[#6E6359] cursor-default"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              <span className="font-bold text-sm">Personal</span>
+            </div>
+            {/* Familia button */}
+            <div
+              className="flex-1 flex items-center gap-2.5 p-3.5 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[#6E6359] cursor-default"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span className="font-bold text-sm">Familia</span>
+            </div>
+          </div>
+
           {/* Email */}
           <div className="text-xs font-bold tracking-wider text-[#94887B] mb-2">EMAIL</div>
           <input
@@ -63,7 +89,7 @@ export default function LoginPage() {
 
           {/* Login button */}
           <div
-            className="block text-center w-full p-4 rounded-[15px] bg-gradient-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-base cursor-default shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
+            className="block text-center w-full p-4 rounded-[15px] bg-linear-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-base cursor-default shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
           >
             Iniciar sesión
           </div>
