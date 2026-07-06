@@ -9,6 +9,7 @@ import {
   parseAllergyText,
   randomAvatarBg,
   randomAvatarColor,
+  isValidDate,
 } from '@/app/_data/kids';
 
 const ROOMS = ['Soles', 'Estrellas', 'Arcoíris'];
@@ -51,8 +52,12 @@ export function AddKidModal({ open, onClose, onAdd }: AddKidModalProps) {
       valid = false;
     }
 
-    if (birthDate.length < 10) {
-      setDateError('La fecha debe estar completa (dd/mm/aaaa)');
+    if (birthDate.length < 10 || !isValidDate(birthDate)) {
+      setDateError(
+        birthDate.length < 10
+          ? 'La fecha debe estar completa (dd/mm/aaaa)'
+          : 'La fecha no es válida',
+      );
       valid = false;
     }
 

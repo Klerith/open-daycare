@@ -348,6 +348,24 @@ export function formatBirthDateDisplay(ddmmyyyy: string): string {
   return `${day} ${MONTH_SHORT[month]} ${parts[2]}`;
 }
 
+export function isValidDate(ddmmyyyy: string): boolean {
+  const parts = ddmmyyyy.split('/');
+  if (parts.length !== 3) return false;
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10);
+  const year = parseInt(parts[2], 10);
+  if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > 31) return false;
+  if (year < 1900 || year > new Date().getFullYear()) return false;
+  const date = new Date(year, month - 1, day);
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
+}
+
 export function parseAllergyText(text: string): AllergyType[] {
   if (!text.trim()) return [];
   const lower = text.toLowerCase().trim();
