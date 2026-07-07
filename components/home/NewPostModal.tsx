@@ -232,7 +232,7 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
                 color: '#B0A290',
               }}
             >
-              <PlusIcon width={22} height={22} />
+              <PlusIcon width={22} height={22} style={{ color: '#C5503A' }} />
               <span className="text-[12px]">Agregar</span>
             </button>
           </div>
