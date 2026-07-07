@@ -377,6 +377,10 @@ export function parseAllergyText(text: string): AllergyType[] {
   return [...new Set(result)];
 }
 
+export function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export function addKidToMock(kid: Kid): void {
   kids.push(kid);
 }
