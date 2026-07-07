@@ -19,9 +19,7 @@ interface NewPostModalProps {
 export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
   const targets = getNewPostTargets();
 
-  const [selectedTarget, setSelectedTarget] = useState<NewPostTarget | null>(
-    null,
-  );
+  const [selectedTargets, setSelectedTargets] = useState<NewPostTarget[]>([]);
   const [selectedType, setSelectedType] = useState<NewPostType | null>(null);
   const [description, setDescription] = useState('');
 
@@ -49,15 +47,36 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
     }
   }, [open, handleKeyDown]);
 
+  const toggleTarget = (target: NewPostTarget) => {
+    setSelectedTargets((prev) => {
+      if (target.type === 'all') {
+        if (prev.some((t) => t.type === 'all')) {
+          return prev.filter((t) => t.type !== 'all');
+        }
+        return [{ type: 'all', label: target.label }];
+      }
+      const isKidSelected = prev.some(
+        (t) => t.type === 'kid' && t.id === target.id,
+      );
+      const filtered = prev.filter(
+        (t) => t.type !== 'all' && !(t.type === 'kid' && t.id === target.id),
+      );
+      if (!isKidSelected) {
+        return [...filtered, target];
+      }
+      return filtered;
+    });
+  };
+
   const handlePublish = () => {
-    if (selectedTarget && selectedType && description.trim()) {
+    if (selectedTargets.length > 0 && selectedType && description.trim()) {
       onPublish();
       resetForm();
     }
   };
 
   const resetForm = () => {
-    setSelectedTarget(null);
+    setSelectedTargets([]);
     setSelectedType(null);
     setDescription('');
   };
@@ -88,7 +107,7 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
           >
             Cancelar
           </button>
-          <span className="font-fredoka text-[18px] font-semibold text-[#3F362E]">
+          <span className="font-head text-[18px] font-semibold text-[#3F362E]">
             Nueva publicación
           </span>
           <button
@@ -108,17 +127,21 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
           </div>
           <div className="mb-[22px] flex flex-wrap gap-[9px]">
             {targets.map((target) => {
-              const isSelected =
-                selectedTarget?.type === 'kid' && target.type === 'kid'
-                  ? selectedTarget.id === target.id
-                  : selectedTarget?.type === 'all' && target.type === 'all';
+              const isSelected = selectedTargets.some(
+                (t) => {
+                  if (t.type === 'all' && target.type === 'all') return true;
+                  if (t.type === 'kid' && target.type === 'kid')
+                    return t.id === target.id;
+                  return false;
+                },
+              );
 
               if (target.type === 'kid') {
                 return (
                   <button
                     key={target.id}
                     type="button"
-                    onClick={() => setSelectedTarget(target)}
+                    onClick={() => toggleTarget(target)}
                     className="flex items-center gap-2 rounded-full px-2.5 py-1.5 text-[14px] font-bold transition-colors"
                     style={
                       isSelected
@@ -135,7 +158,7 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
                     }
                   >
                     <span
-                      className="flex h-[26px] w-[26px] items-center justify-center rounded-full font-fredoka text-[13px] font-semibold"
+                      className="flex h-[26px] w-[26px] items-center justify-center rounded-full font-head text-[13px] font-semibold"
                       style={{
                         background: target.avatarBg,
                         color: target.avatarColor,
@@ -152,7 +175,7 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
                 <button
                   key="all"
                   type="button"
-                  onClick={() => setSelectedTarget(target)}
+                  onClick={() => toggleTarget(target)}
                   className="rounded-full px-4 py-1.5 text-[14px] font-bold transition-colors"
                   style={
                     isSelected
