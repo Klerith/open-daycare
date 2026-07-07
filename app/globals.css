@@ -32,6 +32,12 @@
   --color-checkbox-green: #5fb97e;
   --color-checkbox-text: #8a7234;
   --color-checkbox-bg: #fbf1d6;
+  --color-newpost-meal: #9a7b1e;
+  --color-newpost-nap-bg: #e7dcf6;
+  --color-newpost-nap-text: #7b5fc0;
+  --color-newpost-mood-text: #c56486;
+  --color-newpost-photo-text: #d9684a;
+  --color-newpost-announcement-bg: #ccd8f4;
 }
 
 @theme inline {
