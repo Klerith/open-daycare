@@ -34,7 +34,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Supabase
 
 - Project uses Supabase for database, authentication, and backend services.
-- **Schema changes**: use `execute_sql` for direct SQL iteration, then `apply_migration` to commit clean migration files.
+- **Migrations are mandatory**: Every database manipulation (DDL or DML) MUST be applied via `apply_migration`. Never use `execute_sql` for permanent changes — only for temporary queries or debugging.
+- **Schema changes**: iterate with `execute_sql` if needed, then commit via `apply_migration` with a clean migration file.
+- **Seed data**: insert via migration, not raw SQL. Use `ON CONFLICT DO NOTHING` for idempotency.
 - **RLS**: enable Row Level Security on every table in exposed schemas. Never use `user_metadata` for authorization — use `raw_app_meta_data` / `app_metadata` instead.
 - **Security**: never expose `service_role` key in client code. Use publishable keys for frontend. Views bypass RLS by default — use `security_invoker = true`.
 - **CLI**: use `supabase migration new <name>` to create migration files. Check CLI version with `supabase --version`.
