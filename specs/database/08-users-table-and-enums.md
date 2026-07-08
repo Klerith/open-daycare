@@ -1,6 +1,6 @@
 # SPEC 08 — Users table with enums, RLS, and seed staff user
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** Spec 07 (daycares table)
 > **Date:** 2026-07-08
 > **Objective:** Crear los enums `user_role` y `user_status`, la tabla `users` con RLS, trigger de `auth.users`, y un usuario staff de prueba.
@@ -148,14 +148,14 @@ CREATE TRIGGER on_auth_user_created
 
 ## Acceptance criteria
 
-- [ ] Los enums `user_role` y `user_status` existen en la base de datos con los valores correctos.
-- [ ] La tabla `users` existe con todas las columnas especificadas.
-- [ ] RLS está habilitado en la tabla `users`.
-- [ ] Las políticas RLS permiten SELECT para usuarios de la misma guardería.
-- [ ] Las políticas RLS permiten INSERT/UPDATE para staff y admin.
-- [ ] El trigger `handle_new_user` funciona: al crear un usuario en `auth.users`, se crea automáticamente la fila en `users`.
-- [ ] Existe un usuario staff `fernando@google.com` vinculado a "Guardería Sala Soles".
-- [ ] La migración se aplicó sin errores vía `apply_migration`.
+- [x] Los enums `user_role` y `user_status` existen en la base de datos con los valores correctos.
+- [x] La tabla `users` existe con todas las columnas especificadas.
+- [x] RLS está habilitado en la tabla `users`.
+- [x] Las políticas RLS permiten SELECT para usuarios de la misma guardería.
+- [x] Las políticas RLS permiten INSERT/UPDATE para staff y admin.
+- [x] El trigger `handle_new_user` funciona: al crear un usuario en `auth.users`, se crea automáticamente la fila en `users`.
+- [x] Existe un usuario staff `fernando@google.com` vinculado a "Guardería Sala Soles".
+- [x] La migración se aplicó sin errores vía `apply_migration`.
 
 ## Decisions
 
