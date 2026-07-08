@@ -29,6 +29,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - Playwright: screenshots and any Playwright output go in `.playwright-mcp/` (gitignored).
 - Context7: use it to fetch current framework docs instead of relying on training data.
+- Supabase: database, auth, edge functions, storage, and more. Use MCP tools for SQL execution, migrations, advisors, and logs.
+
+## Supabase
+
+- Project uses Supabase for database, authentication, and backend services.
+- **Schema changes**: use `execute_sql` for direct SQL iteration, then `apply_migration` to commit clean migration files.
+- **RLS**: enable Row Level Security on every table in exposed schemas. Never use `user_metadata` for authorization — use `raw_app_meta_data` / `app_metadata` instead.
+- **Security**: never expose `service_role` key in client code. Use publishable keys for frontend. Views bypass RLS by default — use `security_invoker = true`.
+- **CLI**: use `supabase migration new <name>` to create migration files. Check CLI version with `supabase --version`.
 
 ## Agents
 
@@ -39,6 +48,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - /spec Usaremos esta habilidad para crear las especificaciones.
 - /spec-impl Usaremos esta skill para hacer las implementaciones.
 - /verify-spec Usaremos este comando para verificar los criterios de aceptación de una spec.
+
+## Installed Skills
+
+- **supabase**: Use for any Supabase-related task (database, auth, edge functions, realtime, storage, RLS, migrations, security audits). Loads comprehensive security guidelines, CLI/MCP usage, and best practices.
+- **supabase-postgres-best-practices**: Use when writing, reviewing, or optimizing Postgres queries, schema designs, or database configurations. Covers query performance, connection management, security & RLS, schema design, concurrency, and advanced features.
 
 ## Reglas de código
 
