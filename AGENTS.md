@@ -34,6 +34,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Supabase
 
 - Project uses Supabase for database, authentication, and backend services.
+- **Client helpers**: Use `@supabase/ssr` + `@supabase/supabase-js` packages for all database interactions from the Next.js app.
+  - Server components: import `createClient` from `@/utils/supabase/server` (uses `createServerClient` with cookie-based session handling).
+  - Client components: import `createClient` from `@/utils/supabase/client` (uses `createBrowserClient`).
+  - Middleware: import `createClient` from `@/utils/supabase/middleware` (session refresh on each request).
 - **Migrations are mandatory**: Every database manipulation (DDL or DML) MUST be applied via `apply_migration`. Never use `execute_sql` for permanent changes — only for temporary queries or debugging.
 - **Schema changes**: iterate with `execute_sql` if needed, then commit via `apply_migration` with a clean migration file.
 - **Seed data**: insert via migration, not raw SQL. Use `ON CONFLICT DO NOTHING` for idempotency.
