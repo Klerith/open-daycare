@@ -1,6 +1,35 @@
+'use client';
+
+import { useState } from 'react';
+import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const supabase = createClient();
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
+      setLoading(false);
+      return;
+    }
+
+    window.location.href = '/';
+  }
+
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] bg-[#FBF4EC]">
       {/* Left panel */}
@@ -40,33 +69,54 @@ export default function LoginPage() {
           <h2 className="font-head font-semibold text-3xl mb-1 text-[#3F362E]">Iniciar sesión</h2>
           <p className="mb-7 text-[#94887B] text-sm">Ingresá para ver el día de hoy.</p>
 
-          {/* Email */}
-          <div className="text-xs font-bold tracking-wider text-[#94887B] mb-2">EMAIL</div>
-          <input
-            type="email"
-            defaultValue="caro@opendaycare.com"
-            className="w-full p-3.5 px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-base text-[#3F362E] mb-4 placeholder:text-[#B6A99B]"
-          />
+          <form onSubmit={handleSubmit}>
+            {/* Email */}
+            <div className="text-xs font-bold tracking-wider text-[#94887B] mb-2">EMAIL</div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3.5 px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-base text-[#3F362E] mb-4 placeholder:text-[#B6A99B]"
+              placeholder="tu@email.com"
+              required
+            />
 
-          {/* Password */}
-          <div className="text-xs font-bold tracking-wider text-[#94887B] mb-2">CONTRASEÑA</div>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className="w-full p-3.5 px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-base text-[#3F362E] mb-2.5 placeholder:text-[#B6A99B]"
-          />
+            {/* Password */}
+            <div className="text-xs font-bold tracking-wider text-[#94887B] mb-2">CONTRASEÑA</div>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full p-3.5 px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-base text-[#3F362E] mb-2.5 placeholder:text-[#B6A99B]"
+              required
+            />
 
-          {/* Forgot password */}
-          <div className="text-right mb-5">
-            <span className="text-[#C5503A] text-[13.5px] font-bold cursor-default">¿Olvidaste tu contraseña?</span>
-          </div>
+            {/* Forgot password */}
+            <div className="text-right mb-5">
+              <span className="text-[#C5503A] text-[13.5px] font-bold cursor-default">¿Olvidaste tu contraseña?</span>
+            </div>
 
-          {/* Login button */}
-          <div
-            className="block text-center w-full p-4 rounded-[15px] bg-linear-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-base cursor-default shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
-          >
-            Iniciar sesión
-          </div>
+            {/* Login button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`block text-center w-full p-4 rounded-[15px] text-white font-extrabold text-base shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] ${
+                loading
+                  ? 'bg-[#E0A08E] cursor-not-allowed'
+                  : 'bg-linear-to-b from-[#F4977E] to-[#EE8164] hover:opacity-95'
+              }`}
+            >
+              {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            </button>
+
+            {/* Error message */}
+            {error && (
+              <p className="mt-4 text-center text-[#C5503A] text-sm font-medium">
+                {error}
+              </p>
+            )}
+          </form>
 
           {/* Footer link */}
           <p className="text-center mt-6 text-[#94887B] text-[14.5px]">
