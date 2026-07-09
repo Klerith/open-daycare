@@ -7,7 +7,10 @@ import { AddKidModal } from '@/components/kids/AddKidModal';
 import { SearchIcon } from '@/components/shared/icons';
 
 function normalize(str: string): string {
-  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 }
 
 interface KidsPageClientProps {
@@ -98,7 +101,9 @@ export function KidsPageClient({ groupedData, rooms }: KidsPageClientProps) {
 
       {filteredGroups.every((g) => g.children.length === 0) && (
         <div className="text-center py-12 text-muted">
-          {query ? 'No se encontraron niños con ese nombre' : 'No hay niños registrados'}
+          {query
+            ? 'No se encontraron niños con ese nombre'
+            : 'No hay niños registrados'}
         </div>
       )}
 

@@ -1,4 +1,3 @@
-import { use } from 'react';
 import Link from 'next/link';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileNav } from '@/components/shared/MobileNav';
@@ -12,12 +11,8 @@ import {
   formatBirthDateDisplay,
 } from '@/app/_lib/kid-utils';
 
-interface KidProfileProps {
-  params: Promise<{ id: string }>;
-}
-
-export default async function KidProfilePage({ params }: KidProfileProps) {
-  const { id } = use(params);
+export default async function KidProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const child = await getChildById(id);
 
   if (!child) {
