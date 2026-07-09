@@ -65,19 +65,19 @@ No introduce nuevas estructuras de datos. Reutiliza:
 
 ## Acceptance criteria
 
-- [ ] El formulario de `/login` acepta email y password y llama a `supabase.auth.signInWithPassword()`.
-- [ ] Credenciales correctas (`fernando@google.com` / `Abc123456@`) redirigen a `/` después del login.
-- [ ] Credenciales incorrectas muestran un mensaje de error visible en la UI.
-- [ ] El botón de login muestra estado de loading durante la autenticación.
-- [ ] Los botones "Personal" y "Familia" se mantienen como decoración visual sin función.
-- [ ] El botón de logout en el sidebar cierra la sesión y redirige a `/login`.
-- [ ] Acceder a `/` sin sesión activa redirige automáticamente a `/login`.
-- [ ] Acceder a `/login` con sesión activa redirige automáticamente a `/`.
-- [ ] Acceder a `/activate` con sesión activa redirige automáticamente a `/`.
-- [ ] El proxy existe en `proxy.ts` en la raíz del proyecto.
-- [ ] `npm run lint` pasa sin errores.
-- [ ] `npx tsc --noEmit` pasa sin errores.
-- [ ] No hay errores en la consola del navegador al cargar las páginas.
+- [x] El formulario de `/login` acepta email y password y llama a `supabase.auth.signInWithPassword()`.
+- [x] Credenciales correctas (`fernando@google.com` / `Abc123456@`) redirigen a `/` después del login.
+- [x] Credenciales incorrectas muestran un mensaje de error visible en la UI.
+- [x] El botón de login muestra estado de loading durante la autenticación.
+- [x] Los botones "Personal" y "Familia" se mantienen como decoración visual sin función.
+- [x] El botón de logout en el sidebar cierra la sesión y redirige a `/login`.
+- [x] Acceder a `/` sin sesión activa redirige automáticamente a `/login`.
+- [x] Acceder a `/login` con sesión activa redirige automáticamente a `/`.
+- [x] Acceder a `/activate` con sesión activa redirige automáticamente a `/`.
+- [x] El proxy existe en `proxy.ts` en la raíz del proyecto.
+- [x] `npm run lint` pasa sin errores.
+- [x] `npx tsc --noEmit` pasa sin errores.
+- [x] No hay errores en la consola del navegador al cargar las páginas.
 
 ## Decisions
 
