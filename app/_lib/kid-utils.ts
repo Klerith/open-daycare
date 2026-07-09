@@ -140,3 +140,20 @@ export function isoToYYYYMMDD(isoDate: string): string {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+export function randomAvatarBg(): string {
+  return AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)].bg;
+}
+
+export function randomAvatarColor(): string {
+  return AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)].color;
+}
+
+export interface LinkedParent {
+  name: string;
+  initial: string;
+  role: string;
+  status: ParentStatus;
+  avatarBg: string;
+  avatarColor: string;
+}

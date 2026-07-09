@@ -8,7 +8,7 @@ import {
   randomAvatarBg,
   randomAvatarColor,
   isValidEmail,
-} from '@/app/_data/kids';
+} from '@/app/_lib/kid-utils';
 
 interface LinkParentModalProps {
   open: boolean;
