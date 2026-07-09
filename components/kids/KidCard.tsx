@@ -6,6 +6,7 @@ import {
   parentCountLabel,
   stringToAvatarColors,
   calculateAgeFromISO,
+  type AllergyType,
 } from '@/app/_lib/kid-utils';
 import { ChevronRightIcon } from '@/components/shared/icons';
 

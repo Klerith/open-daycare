@@ -4,12 +4,12 @@ import { MobileNav } from '@/components/shared/MobileNav';
 import { ChevronLeftIcon, AlertTriangleIcon, EditIcon } from '@/components/shared/icons';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { getChildById } from '@/app/_actions/children';
 import { ParentsSection } from '@/components/kids/ParentsSection';
 import {
   calculateAgeFromISO,
   formatBirthDateDisplay,
+  stringToAvatarColors,
 } from '@/app/_lib/kid-utils';
 
 export default async function KidProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -175,20 +175,4 @@ export default async function KidProfilePage({ params }: { params: Promise<{ id:
       </main>
     </div>
   );
-}
-
-function stringToAvatarColors(str: string): { bg: string; color: string } {
-  const AVATAR_COLORS = [
-    { bg: '#A9D9E8', color: '#1F7A93' },
-    { bg: '#F4B8CC', color: '#C44A7A' },
-    { bg: '#B9DEC4', color: '#3E8B62' },
-    { bg: '#F4DC8E', color: '#9A7B1E' },
-    { bg: '#C9B6E8', color: '#7B5FC0' },
-  ];
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % AVATAR_COLORS.length;
-  return AVATAR_COLORS[index];
 }

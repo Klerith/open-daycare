@@ -207,24 +207,24 @@ export interface Child {
 
 ## Acceptance criteria
 
-- [ ] Los enums `child_status` y `relationship_type` existen en la base de datos.
-- [ ] La tabla `rooms` existe con RLS habilitado.
-- [ ] La tabla `children` existe con RLS habilitado.
-- [ ] Las políticas RLS permiten SELECT para usuarios de la misma guardería.
-- [ ] Las políticas RLS permiten escritura solo para staff/admin.
-- [ ] Existen 3 rooms (Soles, Estrellas, Arcoíris) vinculadas al daycare existente.
-- [ ] La tabla `children` está vacía (sin seed data).
-- [ ] `/kids` muestra las rooms reales con sus children desde la base de datos.
-- [ ] `/kids` agrupa niños por sala con contador real.
-- [ ] El buscador filtra niños por nombre (frontend).
-- [ ] Click en una tarjeta de niño navega a `/kids/[id]`.
-- [ ] `/kids/[id]` muestra el perfil real del niño desde la base de datos.
-- [ ] `/kids/[id]` calcula la edad desde `birth_date`.
-- [ ] El botón "Agregar niño" abre el modal funcional.
-- [ ] Crear un niño nuevo lo inserta en la base de datos y refresca la lista.
-- [ ] `npm run lint` pasa sin errores.
-- [ ] `npx tsc --noEmit` pasa sin errores.
-- [ ] No hay errores en la consola del navegador.
+- [x] Los enums `child_status` y `relationship_type` existen en la base de datos.
+- [x] La tabla `rooms` existe con RLS habilitado.
+- [x] La tabla `children` existe con RLS habilitado.
+- [x] Las políticas RLS permiten SELECT para usuarios de la misma guardería.
+- [x] Las políticas RLS permiten escritura solo para staff/admin.
+- [x] Existen 3 rooms (Soles, Estrellas, Arcoíris) vinculadas al daycare existente.
+- [x] La tabla `children` está vacía (sin seed data).
+- [x] `/kids` muestra las rooms reales con sus children desde la base de datos.
+- [x] `/kids` agrupa niños por sala con contador real.
+- [x] El buscador filtra niños por nombre (frontend).
+- [x] Click en una tarjeta de niño navega a `/kids/[id]`.
+- [x] `/kids/[id]` muestra el perfil real del niño desde la base de datos.
+- [x] `/kids/[id]` calcula la edad desde `birth_date`.
+- [x] El botón "Agregar niño" abre el modal funcional.
+- [x] Crear un niño nuevo lo inserta en la base de datos y refresca la lista.
+- [x] `npm run lint` pasa sin errores.
+- [x] `npx tsc --noEmit` pasa sin errores.
+- [x] No hay errores en la consola del navegador.
 
 ## Decisions
 
