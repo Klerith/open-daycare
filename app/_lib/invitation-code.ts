@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const CODE_LENGTH = 5;
@@ -12,7 +13,8 @@ export function generateInvitationCode(): string {
 }
 
 export async function generateUniqueCode(): Promise<string> {
-  const supabase = await createClient();
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
   const maxAttempts = 10;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
