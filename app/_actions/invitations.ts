@@ -111,6 +111,40 @@ export async function createInvitation(input: {
   };
 }
 
+export interface PendingInvitation {
+  id: string;
+  full_name: string;
+  email: string;
+  relationship: 'father' | 'mother' | 'guardian';
+  code: string;
+  expires_at: string;
+  created_at: string;
+}
+
+export async function getPendingInvitationsByChild(childId: string): Promise<PendingInvitation[]> {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data, error } = await supabase
+    .from('invitations')
+    .select('*')
+    .eq('child_id', childId)
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true });
+
+  if (error) throw error;
+
+  return (data || []).map((row) => ({
+    id: row.id,
+    full_name: row.full_name,
+    email: row.email,
+    relationship: row.relationship,
+    code: row.code,
+    expires_at: row.expires_at,
+    created_at: row.created_at,
+  }));
+}
+
 export async function getParentsByChild(childId: string): Promise<ParentChild[]> {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);

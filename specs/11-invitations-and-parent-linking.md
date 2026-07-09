@@ -1,6 +1,6 @@
 # SPEC 11 — Invitaciones y vinculación de padres: tablas, email con Resend y flujo de activación
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 05 (link parent modal visual), SPEC 08 (users table + enums), SPEC 09 (real auth), SPEC 10 (rooms and children)
 > **Fecha:** 2026-07-09
 > **Objetivo:** Crear tablas `invitations` y `parent_children`, convertir el modal de vincular padre en funcional (generar código + enviar email con Resend), y hacer la página `/activate` un flujo real de registro con código de invitación.

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { LinkParentModal } from '@/components/kids/LinkParentModal';
-import { getParentsByChild } from '@/app/_actions/invitations';
+import { getParentsByChild, getPendingInvitationsByChild } from '@/app/_actions/invitations';
 
 interface ParentsSectionProps {
   kidName: string;
@@ -36,29 +36,33 @@ export function ParentsSection({ kidName, childId }: ParentsSectionProps) {
   const [parents, setParents] = useState<
     { id: string; full_name: string; role: string; relationship: string; created_at: string }[]
   >([]);
+  const [pendingInvitations, setPendingInvitations] = useState<
+    { id: string; full_name: string; email: string; relationship: string; code: string; expires_at: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getParentsByChild(childId);
-        setParents(data);
-      } catch {
-        setParents([]);
-      } finally {
-        setLoading(false);
-      }
+  async function loadData() {
+    try {
+      const [parentsData, pendingData] = await Promise.all([
+        getParentsByChild(childId),
+        getPendingInvitationsByChild(childId),
+      ]);
+      setParents(parentsData);
+      setPendingInvitations(pendingData);
+    } catch {
+      setParents([]);
+      setPendingInvitations([]);
+    } finally {
+      setLoading(false);
     }
-    load();
+  }
+
+  useEffect(() => {
+    loadData();
   }, [childId]);
 
   const handleSuccess = async () => {
-    try {
-      const data = await getParentsByChild(childId);
-      setParents(data);
-    } catch {
-      // ignore
-    }
+    await loadData();
   };
 
   return (
@@ -70,7 +74,7 @@ export function ParentsSection({ kidName, childId }: ParentsSectionProps) {
 
         {loading ? (
           <div className="text-[14px] text-muted text-center py-4">Cargando...</div>
-        ) : parents.length === 0 ? (
+        ) : parents.length === 0 && pendingInvitations.length === 0 ? (
           <div className="text-[14px] text-muted text-center py-4">
             Aún no hay padres vinculados.
           </div>
@@ -93,6 +97,33 @@ export function ParentsSection({ kidName, childId }: ParentsSectionProps) {
                       {parent.full_name}
                     </div>
                     <div className="text-[12px] text-[#A89A8B]">{label}</div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {pendingInvitations.map((inv) => {
+              const colors = getAvatarColor(inv.full_name);
+              const initial = inv.full_name.charAt(0).toUpperCase();
+              const label = RELATIONSHIP_LABELS[inv.relationship] || inv.relationship;
+              return (
+                <div key={inv.id} className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center font-head font-semibold text-[15px] shrink-0 opacity-60"
+                    style={{ background: colors.bg, color: colors.color }}
+                  >
+                    {initial}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[14px] font-semibold text-[#3F362E] truncate opacity-60">
+                        {inv.full_name}
+                      </span>
+                      <span className="text-[10px] font-extrabold tracking-[0.5px] px-2 py-0.5 rounded-full bg-[#FBF1D6] text-[#A88526] shrink-0">
+                        PENDIENTE
+                      </span>
+                    </div>
+                    <div className="text-[12px] text-[#A89A8B]">{label} · {inv.email}</div>
                   </div>
                 </div>
               );
