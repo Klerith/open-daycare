@@ -26,6 +26,8 @@ export interface ParentChild {
   child_id: string;
   relationship: 'father' | 'mother' | 'guardian';
   created_at: string;
+  full_name: string;
+  role: string;
 }
 
 export async function createInvitation(input: {
@@ -73,7 +75,7 @@ export async function createInvitation(input: {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
 
-  const { data: invitation, error: insertError } = await supabase
+  const { error: insertError } = await supabase
     .from('invitations')
     .insert({
       child_id: input.childId,
@@ -83,9 +85,7 @@ export async function createInvitation(input: {
       relationship: input.relationship,
       code,
       expires_at: expiresAt.toISOString(),
-    })
-    .select()
-    .single();
+    });
 
   if (insertError) {
     return { code: '', expiresAt: '', error: insertError.message };
@@ -145,6 +145,15 @@ export async function getPendingInvitationsByChild(childId: string): Promise<Pen
   }));
 }
 
+interface ParentWithUser {
+  id: string;
+  parent_id: string;
+  child_id: string;
+  relationship: 'father' | 'mother' | 'guardian';
+  created_at: string;
+  users: { full_name: string; role: string } | null;
+}
+
 export async function getParentsByChild(childId: string): Promise<ParentChild[]> {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -157,7 +166,7 @@ export async function getParentsByChild(childId: string): Promise<ParentChild[]>
 
   if (error) throw error;
 
-  return (data as any[]).map((row) => ({
+  return (data as ParentWithUser[]).map((row) => ({
     id: row.id,
     parent_id: row.parent_id,
     child_id: row.child_id,

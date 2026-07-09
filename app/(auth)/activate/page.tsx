@@ -10,25 +10,26 @@ function ActivateForm() {
   const router = useRouter();
   const code = searchParams.get('code') || '';
 
-  const [status, setStatus] = useState<'loading' | 'valid' | 'invalid'>('loading');
+  const initialStatus = code ? 'loading' : 'invalid';
+  const [status, setStatus] = useState<'loading' | 'valid' | 'invalid'>(initialStatus);
   const [childName, setChildName] = useState('');
   const [roomName, setRoomName] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [photoConsent, setPhotoConsent] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(code ? '' : 'No se proporcionó un código de invitación');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!code) {
-      setStatus('invalid');
-      setError('No se proporcionó un código de invitación');
-      return;
-    }
+    if (!code) return;
+
+    let cancelled = false;
 
     async function validate() {
       const result = await validateInvitationCode(code);
+      if (cancelled) return;
+
       if (!result.valid) {
         setStatus('invalid');
         setError(result.error || 'Código no válido');
@@ -43,6 +44,10 @@ function ActivateForm() {
       }
     }
     validate();
+
+    return () => {
+      cancelled = true;
+    };
   }, [code]);
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -80,12 +80,7 @@ export function LinkParentModal({
     setModalState('success');
   };
 
-  const handleClose = () => {
-    resetForm();
-    onClose();
-  };
-
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setParentName('');
     setEmail('');
     setRole('mother');
@@ -95,7 +90,12 @@ export function LinkParentModal({
     setModalState('form');
     setGeneratedCode('');
     setSubmitError('');
-  };
+  }, []);
+
+  const handleClose = useCallback(() => {
+    resetForm();
+    onClose();
+  }, [resetForm, onClose]);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {

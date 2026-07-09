@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { LinkParentModal } from '@/components/kids/LinkParentModal';
-import { getParentsByChild, getPendingInvitationsByChild } from '@/app/_actions/invitations';
+import { getParentsByChild, getPendingInvitationsByChild, type ParentChild } from '@/app/_actions/invitations';
 
 interface ParentsSectionProps {
   kidName: string;
@@ -33,15 +33,40 @@ function getAvatarColor(name: string) {
 
 export function ParentsSection({ kidName, childId }: ParentsSectionProps) {
   const [showLinkParent, setShowLinkParent] = useState(false);
-  const [parents, setParents] = useState<
-    { id: string; full_name: string; role: string; relationship: string; created_at: string }[]
-  >([]);
+  const [parents, setParents] = useState<ParentChild[]>([]);
   const [pendingInvitations, setPendingInvitations] = useState<
     { id: string; full_name: string; email: string; relationship: string; code: string; expires_at: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadData() {
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadData() {
+      try {
+        const [parentsData, pendingData] = await Promise.all([
+          getParentsByChild(childId),
+          getPendingInvitationsByChild(childId),
+        ]);
+        if (cancelled) return;
+        setParents(parentsData);
+        setPendingInvitations(pendingData);
+      } catch {
+        if (cancelled) return;
+        setParents([]);
+        setPendingInvitations([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [childId]);
+
+  const handleSuccess = async () => {
     try {
       const [parentsData, pendingData] = await Promise.all([
         getParentsByChild(childId),
@@ -50,19 +75,8 @@ export function ParentsSection({ kidName, childId }: ParentsSectionProps) {
       setParents(parentsData);
       setPendingInvitations(pendingData);
     } catch {
-      setParents([]);
-      setPendingInvitations([]);
-    } finally {
-      setLoading(false);
+      // ignore
     }
-  }
-
-  useEffect(() => {
-    loadData();
-  }, [childId]);
-
-  const handleSuccess = async () => {
-    await loadData();
   };
 
   return (
