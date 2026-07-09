@@ -6,6 +6,7 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getChildById } from '@/app/_actions/children';
+import { ParentsSection } from '@/components/kids/ParentsSection';
 import {
   calculateAgeFromISO,
   formatBirthDateDisplay,
@@ -167,14 +168,7 @@ export default async function KidProfilePage({ params }: { params: Promise<{ id:
                 Resumen del día
               </a>
 
-              <div className="bg-card border border-line rounded-[16px] px-[18px] py-4">
-                <div className="text-[12.5px] font-extrabold tracking-[0.8px] text-[#8A7C6D] mb-[14px]">
-                  PADRES VINCULADOS
-                </div>
-                <div className="text-[14px] text-muted text-center py-4">
-                  La vinculación de padres estará disponible próximamente.
-                </div>
-              </div>
+              <ParentsSection kidName={child.full_name} />
             </div>
           </div>
         </div>
