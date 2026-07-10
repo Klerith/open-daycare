@@ -7,6 +7,10 @@
       "description": "Crea especificaciones de pantallas y funcionalidades",
       "template": "Carga y sigue la skill spec en .agents/skills/spec/SKILL.md.\n\nFeature: $ARGUMENTS"
     },
+    "a11y": {
+      "description": "Audita accesibilidad WCAG 2.2 AA de un componente y aplica fixes",
+      "template": "Carga y sigue la skill accessibility-checker en .opencode/agent/accessibility-checker.md Archivo a auditar: $ARGUMENTS"
+    },
     "db-migrate": {
       "description": "Detecta, crea y aplica migraciones de base de datos desde las specs",
       "template": "Carga y sigue la skill db-migrator en .agents/skills/db-migrator/SKILL.md."

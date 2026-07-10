@@ -49,6 +49,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - `spec-verifier`: Verifies acceptance criteria of a spec file. Reviews implementation against each criterion, fixes code/spec issues found, and marks checkboxes. Uses Playwright MCP with vision to compare screenshots against references, and Context7 MCP to validate Next.js best practices.
 - `db-migrator`: Detects, creates, and applies Supabase database migrations from specs. Scans `specs/database/` and all specs for DB changes, compares against existing migrations, generates missing migration files, applies them via MCP, and validates the result. Trigger with `/db-migrate`.
+- `accessibility-checker`: Audita accesibilidad WCAG 2.2 AA de componentes TSX/HTML/CSS y aplica fixes automáticamente. Incluye verificación de contraste del design system. Trigger with `/a11y`.
 
 ## Spec Driven Development - Skills
 
@@ -65,3 +66,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Reglas de código
 
 - Usar código limpio, nombres, funciones, variables, etc. en inglés.
+- **React DOM attributes use camelCase**: Always use React's camelCase versions of HTML attributes (e.g., `autoComplete`, `tabIndex`, `htmlFor`, `className`, `strokeWidth`, `aria-*` stays as-is). Never use lowercase HTML attribute names like `autocomplete`, `tabindex`, `for`, `class`, `strokewidth`.
