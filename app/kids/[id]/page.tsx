@@ -168,7 +168,7 @@ export default async function KidProfilePage({ params }: { params: Promise<{ id:
                 Resumen del día
               </a>
 
-              <ParentsSection kidName={child.full_name} />
+              <ParentsSection kidName={child.full_name} childId={child.id} />
             </div>
           </div>
         </div>
