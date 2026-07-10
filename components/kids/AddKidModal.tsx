@@ -2,10 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createChild } from '@/app/_actions/children';
-import {
-  isValidDate,
-  parseAllergyText,
-} from '@/app/_lib/kid-utils';
+import { isValidDate, parseAllergyText } from '@/app/_lib/kid-utils';
 import type { Room } from '@/app/_actions/children';
 
 interface AddKidModalProps {
@@ -16,7 +13,12 @@ interface AddKidModalProps {
   daycareId?: string;
 }
 
-export function AddKidModal({ open, onClose, onAdd, rooms = [] }: AddKidModalProps) {
+export function AddKidModal({
+  open,
+  onClose,
+  onAdd,
+  rooms = [],
+}: AddKidModalProps) {
   const [fullName, setFullName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [room, setRoom] = useState('');
