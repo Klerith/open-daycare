@@ -6,6 +6,10 @@
     "spec": {
       "description": "Crea especificaciones de pantallas y funcionalidades",
       "template": "Carga y sigue la skill spec en .agents/skills/spec/SKILL.md.\n\nFeature: $ARGUMENTS"
+    },
+    "db-migrate": {
+      "description": "Detecta, crea y aplica migraciones de base de datos desde las specs",
+      "template": "Carga y sigue la skill db-migrator en .agents/skills/db-migrator/SKILL.md."
     }
   },
   "references": {

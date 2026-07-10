@@ -48,6 +48,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Agents
 
 - `spec-verifier`: Verifies acceptance criteria of a spec file. Reviews implementation against each criterion, fixes code/spec issues found, and marks checkboxes. Uses Playwright MCP with vision to compare screenshots against references, and Context7 MCP to validate Next.js best practices.
+- `db-migrator`: Detects, creates, and applies Supabase database migrations from specs. Scans `specs/database/` and all specs for DB changes, compares against existing migrations, generates missing migration files, applies them via MCP, and validates the result. Trigger with `/db-migrate`.
 
 ## Spec Driven Development - Skills
 
