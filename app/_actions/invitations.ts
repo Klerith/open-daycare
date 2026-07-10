@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { generateUniqueCode } from '@/app/_lib/invitation-code';
@@ -254,15 +255,16 @@ export async function activateInvitation(input: {
     return { error: 'Esta invitación ha expirado' };
   }
 
-  const { data: authData, error: signUpError } = await supabase.auth.signUp({
+  const adminSupabase = createAdminClient();
+
+  const { data: authData, error: signUpError } = await adminSupabase.auth.admin.createUser({
     email: input.email.toLowerCase(),
     password: input.password,
-    options: {
-      data: {
-        full_name: input.fullName.trim(),
-        role: 'parent',
-        daycare_id: null,
-      },
+    email_confirm: true,
+    user_metadata: {
+      full_name: input.fullName.trim(),
+      role: 'parent',
+      daycare_id: null,
     },
   });
 
@@ -270,7 +272,7 @@ export async function activateInvitation(input: {
     return { error: signUpError?.message || 'No se pudo crear la cuenta' };
   }
 
-  const { error: parentChildError } = await supabase.from('parent_children').insert({
+  const { error: parentChildError } = await adminSupabase.from('parent_children').insert({
     parent_id: authData.user.id,
     child_id: invitation.child_id,
     relationship: invitation.relationship,
@@ -280,13 +282,22 @@ export async function activateInvitation(input: {
     return { error: 'Se creó la cuenta pero no se pudo vincular al niño. Contacta al staff.' };
   }
 
-  const { error: updateError } = await supabase
+  const { error: updateError } = await adminSupabase
     .from('invitations')
     .update({ status: 'accepted', accepted_at: new Date().toISOString() })
     .eq('id', invitation.id);
 
   if (updateError) {
     return { error: 'Se creó la cuenta pero no se pudo actualizar la invitación.' };
+  }
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: input.email.toLowerCase(),
+    password: input.password,
+  });
+
+  if (signInError) {
+    return { error: 'Cuenta creada pero no se pudo iniciar sesión. Iniciá sesión manualmente.' };
   }
 
   return { error: null };
