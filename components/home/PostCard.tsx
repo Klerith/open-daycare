@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   type FeedPost,
   type PostType,
@@ -31,7 +32,11 @@ const BADGE: Record<
   },
 };
 
-export function PostCard({ post }: { post: FeedPost }) {
+interface PostCardProps {
+  post: FeedPost;
+}
+
+export const PostCard = memo(function PostCard({ post }: PostCardProps) {
   const badge = BADGE[post.type];
   return (
     <article className="bg-card border border-line rounded-[20px] py-5 px-[22px] shadow-[0_4px_16px_-12px_rgba(120,90,60,0.5)]">
@@ -84,18 +89,21 @@ export function PostCard({ post }: { post: FeedPost }) {
           <HeartIcon className="w-[19px] h-[19px]" />
           {post.hearts}
         </span>
-        <a
-          href="#"
-          className="flex items-center gap-[7px] text-[#94887B] font-bold text-[14px]"
+        <button
+          type="button"
+          className="flex items-center gap-[7px] text-[#94887B] font-bold text-[14px] bg-transparent border-none cursor-pointer p-0"
         >
           <CommentIcon className="w-[18px] h-[18px]" />
           {post.comments}
-        </a>
+        </button>
         <span className="flex-1" />
-        <a href="#" className="text-[#C5503A] font-extrabold text-[14px]">
+        <button
+          type="button"
+          className="text-[#C5503A] font-extrabold text-[14px] bg-transparent border-none cursor-pointer p-0"
+        >
           Editar
-        </a>
+        </button>
       </div>
     </article>
   );
-}
+});

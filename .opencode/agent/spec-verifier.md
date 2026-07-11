@@ -1,6 +1,6 @@
 ---
 description: Verifies acceptance criteria of a spec file. Reviews implementation against each criterion, fixes code/spec issues found, and marks checkboxes. Uses Playwright MCP with vision to compare screenshots against references, and Context7 MCP to validate Next.js best practices. Use when a spec has been implemented and needs verification, or to check which acceptance criteria pass/fail.
-mode: all
+mode: subagent
 model: opencode-go/qwen3.6-plus
 color: success
 steps: 75
@@ -36,13 +36,13 @@ Also read the **Scope**, **Implementation plan**, and **Decisions** sections for
 
 For each checkbox criterion, classify it into one of:
 
-| Category | Indicators | Verification method |
-|---|---|---|
-| **Visual** | colors, fonts, layout, specific UI text, responsive, screenshots | Playwright screenshot + vision comparison vs `references/screenshots/` |
-| **Next.js practices** | next/font, metadata, App Router, lang, globals.css | Context7 MCP + source code inspection |
-| **Lint/typecheck** | `npm run lint`, `tsc`, type errors | Bash commands |
-| **Console** | browser console errors | Playwright console messages |
-| **Code structure** | file paths, component organization, data location | glob + read |
+| Category              | Indicators                                                       | Verification method                                                    |
+| --------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Visual**            | colors, fonts, layout, specific UI text, responsive, screenshots | Playwright screenshot + vision comparison vs `references/screenshots/` |
+| **Next.js practices** | next/font, metadata, App Router, lang, globals.css               | Context7 MCP + source code inspection                                  |
+| **Lint/typecheck**    | `npm run lint`, `tsc`, type errors                               | Bash commands                                                          |
+| **Console**           | browser console errors                                           | Playwright console messages                                            |
+| **Code structure**    | file paths, component organization, data location                | glob + read                                                            |
 
 ### Step 3 — Ensure dev server is running
 
@@ -55,6 +55,7 @@ If any criterion is Visual or Console:
 ### Step 4 — Verify each criterion
 
 **Visual criteria:**
+
 1. Navigate to the relevant URL with Playwright.
 2. Take a full-page screenshot with `playwright_browser_take_screenshot` (type: png, scale: device). Save to `.playwright-mcp/`.
 3. Read the corresponding reference screenshot from `references/screenshots/` (use `read` tool — it can read PNG files).
@@ -63,6 +64,7 @@ If any criterion is Visual or Console:
 6. If it doesn't match: inspect the relevant component code, identify the discrepancy, fix it, re-verify.
 
 **Next.js best practices criteria:**
+
 1. Use Context7 MCP: call `context7_resolve-library-id` with libraryName "Next.js".
 2. Call `context7_query-docs` with the specific topic (e.g., "next/font google setup in app router", "metadata export in layout", "lang attribute").
 3. Read the relevant source files (e.g., `app/layout.tsx`, `app/globals.css`).
@@ -70,16 +72,19 @@ If any criterion is Visual or Console:
 5. Mark accordingly. Fix non-compliant code if found.
 
 **Lint/typecheck criteria:**
+
 1. Run `npm run lint` and/or `npx tsc --noEmit` (bash).
 2. Mark `[x]` if exit code 0, `[ ]` otherwise.
 3. If errors: fix them in the code, re-run to confirm.
 
 **Console criteria:**
+
 1. Use `playwright_browser_console_messages` with level `error`.
 2. Mark `[x]` if no errors, `[ ]` if errors present.
 3. If errors: investigate source, fix, re-check.
 
 **Code structure criteria:**
+
 1. Use `glob` to verify expected files exist.
 2. Use `read` to verify expected structures/exports.
 3. Mark accordingly. Fix if missing.
@@ -87,6 +92,7 @@ If any criterion is Visual or Console:
 ### Step 5 — Mark checkboxes in the spec
 
 Edit the spec file to update each criterion:
+
 - `- [x]` for passing criteria
 - `- [ ]` for failing criteria (leave unchecked)
 - For failing criteria, add a sub-bullet explaining what's wrong: `  - ⚠️ [brief explanation]`
@@ -94,6 +100,7 @@ Edit the spec file to update each criterion:
 ### Step 6 — Fix code issues (correction mode)
 
 For any criterion that failed:
+
 1. Identify the root cause in the code.
 2. Fix it (edit the relevant files following project conventions — see AGENTS.md).
 3. Re-verify the criterion.

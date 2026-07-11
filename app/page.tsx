@@ -9,6 +9,7 @@ import { Composer } from "@/components/home/Composer";
 import { FeedDivider } from "@/components/home/FeedDivider";
 import { PostCard } from "@/components/home/PostCard";
 import { NewPostModal } from "@/components/home/NewPostModal";
+import PokemonViewer from "@/components/pokemon/PokemonViewer";
 
 export default function Home() {
   const [showNewPost, setShowNewPost] = useState(false);
@@ -26,6 +27,9 @@ export default function Home() {
             {posts.map((post) => (
               <PostCard key={post.id} post={post} />
             ))}
+          </div>
+          <div className="mt-8">
+            <PokemonViewer />
           </div>
         </div>
       </main>

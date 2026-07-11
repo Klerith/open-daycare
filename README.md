@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Open Daycare
 
-## Getting Started
+Aplicación de gestión de guardería (daycare) con soporte para personal administrativo y familias/padres.
 
-First, run the development server:
+## Stack
+
+- **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript
+- **Estilos**: Tailwind CSS v4
+- **Backend**: Supabase (Database, Auth, Edge Functions, Storage)
+- **Emails**: Resend
+
+## Requisitos
+
+- Node.js >= 18
+- npm (o tu package manager preferido)
+- [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
+- Cuenta en [Supabase](https://supabase.com/dashboard)
+- Cuenta en [Resend](https://resend.com/api-keys) (para envío de emails)
+
+## Configuración del proyecto
+
+### 1. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 2. Configurar variables de entorno
+
+Copia el archivo de ejemplo y completa las variables:
+
+```bash
+cp .env.template .env
+```
+
+Edita `.env` con tus valores:
+
+| Variable                               | Descripción                                                 |
+| -------------------------------------- | ----------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | URL de tu proyecto Supabase                                 |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clave publicable (formato `sb_publishable_...`)             |
+| `SUPABASE_SERVICE_ROLE_KEY`            | Clave de servicio (solo servidor, nunca exponer al cliente) |
+| `SUPABASE_DB_PASSWORD`                 | Password de la base de datos                                |
+| `RESEND_API_KEY`                       | API key de Resend para envío de emails                      |
+| `NEXT_PUBLIC_APP_URL`                  | URL base de la app (default: `http://localhost:3000`)       |
+
+### 3. Ejecutar migraciones
+
+Las migraciones están en `supabase/migrations/`. Para aplicarlas al proyecto remoto:
+
+```bash
+supabase db push
+```
+
+## Levantar el proyecto
+
+### Desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build de producción
 
-This project uses [`next/font/google`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to load Fredoka and Nunito fonts.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+### Linting y typecheck
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint       # ESLint
+npx tsc --noEmit   # TypeScript
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Supabase CLI - Autenticación
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Login en tu máquina
 
-## Deploy on Vercel
+Para autenticar el CLI de Supabase con tu cuenta:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+supabase login
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Esto abrirá el navegador para que autorices el acceso con tu cuenta de Supabase. Una vez completado, el CLI queda autenticado localmente.
+
+### Vincular tu proyecto
+
+Si el proyecto aún no está vinculado localmente:
+
+```bash
+supabase link --project-ref <tu-project-ref>
+```
+
+El `<project-ref>` lo encuentres en el dashboard de Supabase: **Settings > General > Project ID** (o en la URL: `https://supabase.com/dashboard/project/<project-ref>`).
+
+### Verificar conexión
+
+```bash
+supabase status
+```
+
+## Supabase MCP - Autenticación
+
+Después de hacer `supabase login`, debes validar que el MCP de Supabase esté autenticado en opencode:
+
+```bash
+opencode mcp auth supabase
+```
+
+Este comando verifica que el MCP pueda conectarse correctamente a tu proyecto Supabase. Si falla, asegúrate de:
+
+1. Haber hecho `supabase login` exitosamente
+2. El proyecto esté linkeado con `supabase link --project-ref <tu-project-ref>`
+3. Las variables de entorno en `.env` coincidan con tu proyecto
+
+## Estructura del proyecto
+
+```
+├── app/                    # Next.js App Router
+├── components/             # Componentes reutilizables
+├── supabase/migrations/    # Migraciones de base de datos
+├── utils/supabase/         # Clientes de Supabase (server, client, middleware, admin)
+├── references/pantallas/   # Diseños de referencia (.dc.html)
+├── references/screenshots/ # Capturas de pantalla de referencia
+└── .env.template           # Plantilla de variables de entorno
+```
+
+## Notas importantes
+
+- **Migraciones**: Toda modificación DDL/DML debe aplicarse via migración, nunca con SQL directo en producción.
+- **RLS**: Todas las tablas expuestas tienen Row Level Security habilitado.
+- **Service Role Key**: Nunca exponer `SUPABASE_SERVICE_ROLE_KEY` en código cliente.
