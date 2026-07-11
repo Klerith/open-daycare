@@ -2,6 +2,21 @@
   "$schema": "https://opencode.ai/config.json",
   "lsp": true,
   "formatter": true,
+  "agent": {
+    "db-security-auditor": {
+      "description": "Audita seguridad de base de datos Supabase y previene fugas entre niños y padres",
+      "mode": "subagent",
+      "permission": {
+        "edit": "ask",
+        "bash": {
+          "supabase *": "allow",
+          "git status *": "allow",
+          "npm run lint *": "allow",
+          "npx tsc *": "allow"
+        }
+      }
+    }
+  },
   "command": {
     "spec": {
       "description": "Crea especificaciones de pantallas y funcionalidades",
@@ -14,6 +29,10 @@
     "db-migrate": {
       "description": "Detecta, crea y aplica migraciones de base de datos desde las specs",
       "template": "Carga y sigue la skill db-migrator en .agents/skills/db-migrator/SKILL.md."
+    },
+    "db-audit": {
+      "description": "Audita seguridad de base de datos Supabase y previene fugas entre niños y padres",
+      "template": "Carga y sigue la skill db-security-auditor en .agents/skills/db-security-auditor/SKILL.md."
     }
   },
   "references": {

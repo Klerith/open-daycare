@@ -2,6 +2,7 @@
 name: accessibility-checker
 description: Audita accesibilidad WCAG 2.2 AA de componentes TSX/HTML/CSS y aplica fixes automáticamente. Incluye verificación de contraste del design system.
 disable-model-invocation: true
+mode: subagent
 allowed-tools: Bash(git status:*), Bash(npm run lint:*), Bash(npx tsc:*)
 ---
 
