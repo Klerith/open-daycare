@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
-import { buildPostImageUrl, formatRelativeTime, type PostType } from '@/app/_data/posts';
+import { formatRelativeTime, type PostType } from '@/app/_data/posts';
 
 export interface FeedPostImage {
   id: string;
@@ -41,6 +41,17 @@ function getAvatarColors(id: string) {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
+async function getSignedImageUrl(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  storagePath: string,
+): Promise<string> {
+  const { data } = await supabase.storage
+    .from('post-images')
+    .createSignedUrl(storagePath, 60 * 60); // 1 hour
+
+  return data?.signedUrl || '';
+}
+
 export async function getPosts(): Promise<FeedPost[]> {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -58,7 +69,9 @@ export async function getPosts(): Promise<FeedPost[]> {
   if (postsError) throw postsError;
   if (!posts) return [];
 
-  return posts.map((row) => {
+  const result: FeedPost[] = [];
+
+  for (const row of posts) {
     const colors = getAvatarColors(row.author?.full_name || row.id);
     const initial = row.author?.full_name?.charAt(0).toUpperCase() || '?';
     const audience =
@@ -66,17 +79,22 @@ export async function getPosts(): Promise<FeedPost[]> {
         ? `familia de ${row.target_child.full_name.split(' ')[0]}`
         : 'toda la sala';
 
-    const images: FeedPostImage[] = (row.post_images || [])
-      .sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order)
-      .map((img: { id: string; storage_path: string; caption: string | null; sort_order: number }) => ({
+    const rawImages = (row.post_images || [])
+      .sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order);
+
+    const images: FeedPostImage[] = [];
+    for (const img of rawImages) {
+      const url = await getSignedImageUrl(supabase, img.storage_path);
+      images.push({
         id: img.id,
         storage_path: img.storage_path,
         caption: img.caption,
-        url: buildPostImageUrl(img.storage_path),
+        url,
         sort_order: img.sort_order,
-      }));
+      });
+    }
 
-    return {
+    result.push({
       id: row.id,
       authorName: row.author?.full_name || 'Staff',
       authorInitial: initial,
@@ -88,6 +106,8 @@ export async function getPosts(): Promise<FeedPost[]> {
       images,
       relativeTime: formatRelativeTime(row.created_at),
       created_at: row.created_at,
-    };
-  });
+    });
+  }
+
+  return result;
 }
