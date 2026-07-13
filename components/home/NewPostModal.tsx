@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   NEW_POST_TYPE_LABEL,
   NEW_POST_TYPE_COLORS,
@@ -8,44 +8,67 @@ import {
   type NewPostType,
   type NewPostTarget,
 } from '@/app/_data/newPost';
-import { PhotoIcon, PlusIcon } from '@/components/shared/icons';
+import {
+  createPost,
+  type CreatePostResult,
+} from '@/app/_actions/createPost';
+import {
+  MAX_IMAGES,
+  validateImage,
+} from '@/app/_data/posts';
+import { PhotoIcon, PlusIcon, CloseIcon } from '@/components/shared/icons';
 
 interface NewPostModalProps {
   open: boolean;
   onClose: () => void;
   onPublish: () => void;
+  userRole?: 'staff' | 'admin' | 'parent';
+  children?: { id: string; full_name: string }[];
 }
 
-export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
-  const targets = getNewPostTargets();
+export function NewPostModal({
+  open,
+  onClose,
+  onPublish,
+  userRole = 'staff',
+  children: realChildren,
+}: NewPostModalProps) {
+  const targets = getNewPostTargets(realChildren);
 
   const [selectedTargets, setSelectedTargets] = useState<NewPostTarget[]>([]);
   const [selectedType, setSelectedType] = useState<NewPostType | null>(null);
   const [description, setDescription] = useState('');
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
+    if (e.target === e.currentTarget && !isSubmitting) {
       onClose();
     }
   };
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
   useEffect(() => {
     if (open) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && !isSubmitting) {
+          onClose();
+        }
+      };
       document.addEventListener('keydown', handleKeyDown);
       return () => {
         document.removeEventListener('keydown', handleKeyDown);
       };
     }
-  }, [open, handleKeyDown]);
+  }, [open, isSubmitting, onClose]);
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls]);
 
   const toggleTarget = (target: NewPostTarget) => {
     setSelectedTargets((prev) => {
@@ -68,10 +91,81 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
     });
   };
 
-  const handlePublish = () => {
-    if (selectedTargets.length > 0 && selectedType && description.trim()) {
-      onPublish();
-      resetForm();
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const remaining = MAX_IMAGES - selectedImages.length;
+    const toAdd = files.slice(0, remaining);
+
+    const errors: string[] = [];
+    const validFiles: File[] = [];
+    const validUrls: string[] = [];
+
+    for (const file of toAdd) {
+      const result = validateImage(file);
+      if (!result.valid) {
+        errors.push(result.error!);
+      } else {
+        validFiles.push(file);
+        validUrls.push(URL.createObjectURL(file));
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setSelectedImages((prev) => [...prev, ...validFiles]);
+      setPreviewUrls((prev) => [...prev, ...validUrls]);
+    }
+
+    if (errors.length > 0) {
+      setError(errors[0]);
+    }
+
+    if (e.target) {
+      e.target.value = '';
+    }
+  };
+
+  const handleAddImages = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleRemoveImage = (index: number) => {
+    URL.revokeObjectURL(previewUrls[index]);
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handlePublish = async () => {
+    if (isSubmitting) return;
+    if (!selectedType || !description.trim()) return;
+
+    const hasAllTarget = selectedTargets.some((t) => t.type === 'all');
+    const kidTarget = selectedTargets.find((t) => t.type === 'kid');
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const result: CreatePostResult = await createPost({
+        postType: selectedType,
+        description: description.trim(),
+        targetType: hasAllTarget ? 'all' : 'kid',
+        targetChildId: kidTarget?.type === 'kid' ? kidTarget.id : undefined,
+        images: selectedImages.length > 0 ? selectedImages : undefined,
+      });
+
+      if (result.success) {
+        onPublish();
+        resetForm();
+        onClose();
+      } else {
+        setError(result.error || 'Error al crear la publicación');
+      }
+    } catch {
+      setError('Error inesperado al crear la publicación');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -79,15 +173,29 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
     setSelectedTargets([]);
     setSelectedType(null);
     setDescription('');
+    setSelectedImages([]);
+    previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    setPreviewUrls([]);
+    setError(null);
   };
 
   useEffect(() => {
     if (!open) {
       resetForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   if (!open) return null;
+
+  if (userRole !== 'staff' && userRole !== 'admin') {
+    return null;
+  }
+
+  const canPublish =
+    selectedType !== null &&
+    description.trim().length > 0 &&
+    !isSubmitting;
 
   return (
     <div
@@ -103,7 +211,8 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-[15px] font-bold text-[#94887B] hover:text-[#7A6E64]"
+            disabled={isSubmitting}
+            className="text-[15px] font-bold text-[#94887B] hover:text-[#7A6E64] disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -113,9 +222,10 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
           <button
             type="button"
             onClick={handlePublish}
-            className="text-[15px] font-extrabold text-[#D9583C] hover:text-[#C44A2E]"
+            disabled={!canPublish}
+            className="text-[15px] font-extrabold text-[#D9583C] hover:text-[#C44A2E] disabled:opacity-50"
           >
-            Publicar
+            {isSubmitting ? 'Publicando...' : 'Publicar'}
           </button>
         </div>
 
@@ -127,14 +237,12 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
           </div>
           <div className="mb-[22px] flex flex-wrap gap-[9px]">
             {targets.map((target) => {
-              const isSelected = selectedTargets.some(
-                (t) => {
-                  if (t.type === 'all' && target.type === 'all') return true;
-                  if (t.type === 'kid' && target.type === 'kid')
-                    return t.id === target.id;
-                  return false;
-                },
-              );
+              const isSelected = selectedTargets.some((t) => {
+                if (t.type === 'all' && target.type === 'all') return true;
+                if (t.type === 'kid' && target.type === 'kid')
+                  return t.id === target.id;
+                return false;
+              });
 
               if (target.type === 'kid') {
                 return (
@@ -231,34 +339,87 @@ export function NewPostModal({ open, onClose, onPublish }: NewPostModalProps) {
             placeholder="Contá cómo le fue hoy…"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mb-[22px] w-full resize-y rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white px-4 py-3.5 text-[15px] leading-relaxed text-[#3F362E] placeholder:text-[#B6A99B]"
+            disabled={isSubmitting}
+            className="mb-[22px] w-full resize-y rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white px-4 py-3.5 text-[15px] leading-relaxed text-[#3F362E] placeholder:text-[#B6A99B] disabled:opacity-60"
             style={{ minHeight: '120px' }}
           />
 
           {/* FOTOS */}
           <div className="mb-2.5 text-[12px] font-extrabold tracking-[.7px] text-[#94887B]">
             FOTOS
+            {selectedImages.length > 0 && (
+              <span className="ml-2 font-normal text-[#6E6359]">
+                ({selectedImages.length}/{MAX_IMAGES})
+              </span>
+            )}
           </div>
-          <div className="flex gap-3">
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            multiple
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+
+          <div className="flex flex-wrap gap-3">
+            {/* Placeholder */}
             <div
               className="flex h-[96px] w-[96px] items-center justify-center rounded-[14px] border border-[#ECE0D0]"
               style={{ background: '#F4ECE1', color: '#CBB89F' }}
             >
               <PhotoIcon width={26} height={26} />
             </div>
-            <button
-              type="button"
-              className="flex h-[96px] w-[96px] flex-col items-center justify-center gap-1.5 rounded-[14px] border-[1.5px] border-dashed"
-              style={{
-                background: '#F4ECE1',
-                borderColor: '#DBCDBA',
-                color: '#B0A290',
-              }}
-            >
-              <PlusIcon width={22} height={22} style={{ color: '#C5503A' }} />
-              <span className="text-[12px]">Agregar</span>
-            </button>
+
+            {/* Add button */}
+            {selectedImages.length < MAX_IMAGES && (
+              <button
+                type="button"
+                onClick={handleAddImages}
+                disabled={isSubmitting}
+                className="flex h-[96px] w-[96px] flex-col items-center justify-center gap-1.5 rounded-[14px] border-[1.5px] border-dashed disabled:opacity-50"
+                style={{
+                  background: '#F4ECE1',
+                  borderColor: '#DBCDBA',
+                  color: '#B0A290',
+                }}
+              >
+                <PlusIcon width={22} height={22} style={{ color: '#C5503A' }} />
+                <span className="text-[12px]">Agregar</span>
+              </button>
+            )}
+
+            {/* Previews */}
+            {previewUrls.map((url, index) => (
+              <div
+                key={url}
+                className="relative h-[96px] w-[96px] rounded-[14px] overflow-hidden border border-[#ECE0D0]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={url}
+                  alt={`Preview ${index + 1}`}
+                  className="h-full w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(index)}
+                  disabled={isSubmitting}
+                  className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 disabled:opacity-50"
+                >
+                  <CloseIcon width={12} height={12} />
+                </button>
+              </div>
+            ))}
           </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="mt-4 rounded-[10px] bg-[#FDE8E0] px-4 py-3 text-[13px] text-[#C5503A]">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
