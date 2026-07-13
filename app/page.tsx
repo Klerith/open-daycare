@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { posts } from "@/app/_data/mock";
-import { Sidebar } from "@/components/shared/Sidebar";
-import { MobileNav } from "@/components/shared/MobileNav";
-import { FeedHeader } from "@/components/home/FeedHeader";
-import { Composer } from "@/components/home/Composer";
-import { FeedDivider } from "@/components/home/FeedDivider";
-import { PostCard } from "@/components/home/PostCard";
-import { NewPostModal } from "@/components/home/NewPostModal";
-import PokemonViewer from "@/components/pokemon/PokemonViewer";
+import { posts } from '@/app/_data/mock';
+import { Sidebar } from '@/components/shared/Sidebar';
+import { MobileNav } from '@/components/shared/MobileNav';
+import { FeedHeader } from '@/components/home/FeedHeader';
+import { Composer } from '@/components/home/Composer';
+import { FeedDivider } from '@/components/home/FeedDivider';
+import { PostCard } from '@/components/home/PostCard';
+import { NewPostModal } from '@/components/home/NewPostModal';
+import PokemonViewer from '@/components/pokemon/PokemonViewer';
 
 export default function Home() {
   const [showNewPost, setShowNewPost] = useState(false);
@@ -28,9 +28,9 @@ export default function Home() {
               <PostCard key={post.id} post={post} />
             ))}
           </div>
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <PokemonViewer />
-          </div>
+          </div> */}
         </div>
       </main>
       <NewPostModal
