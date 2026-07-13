@@ -23,7 +23,7 @@ interface NewPostModalProps {
   onClose: () => void;
   onPublish: () => void;
   userRole?: 'staff' | 'admin' | 'parent';
-  children?: { id: string; full_name: string }[];
+  realChildren?: { id: string; full_name: string }[];
 }
 
 export function NewPostModal({
@@ -31,7 +31,7 @@ export function NewPostModal({
   onClose,
   onPublish,
   userRole = 'staff',
-  children: realChildren,
+  realChildren,
 }: NewPostModalProps) {
   const targets = getNewPostTargets(realChildren);
 
