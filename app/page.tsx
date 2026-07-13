@@ -1,43 +1,66 @@
-'use client';
+import { getPosts } from '@/app/_queries/posts';
+import { FeedClient } from '@/components/home/FeedClient';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 
-import { useState } from 'react';
-import { posts } from "@/app/_data/mock";
-import { Sidebar } from "@/components/shared/Sidebar";
-import { MobileNav } from "@/components/shared/MobileNav";
-import { FeedHeader } from "@/components/home/FeedHeader";
-import { Composer } from "@/components/home/Composer";
-import { FeedDivider } from "@/components/home/FeedDivider";
-import { PostCard } from "@/components/home/PostCard";
-import { NewPostModal } from "@/components/home/NewPostModal";
-import PokemonViewer from "@/components/pokemon/PokemonViewer";
+export default async function Home() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
 
-export default function Home() {
-  const [showNewPost, setShowNewPost] = useState(false);
+  const posts = await getPosts();
 
-  return (
-    <div className="flex flex-1 min-h-screen bg-canvas">
-      <Sidebar pathname="/" onOpenNewPost={() => setShowNewPost(true)} />
-      <MobileNav pathname="/" />
-      <main className="flex-1 min-w-0 h-screen overflow-y-auto">
-        <div className="max-w-[760px] w-full mx-auto px-5 md:px-10 pt-16 md:pt-[34px] pb-20">
-          <FeedHeader />
-          <Composer />
-          <FeedDivider />
-          <div className="flex flex-col gap-4">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-          <div className="mt-8">
-            <PokemonViewer />
-          </div>
-        </div>
-      </main>
-      <NewPostModal
-        open={showNewPost}
-        onClose={() => setShowNewPost(false)}
-        onPublish={() => setShowNewPost(false)}
-      />
-    </div>
-  );
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let userRole: 'staff' | 'admin' | 'parent' | undefined;
+  let realChildren: { id: string; full_name: string }[] | undefined;
+
+  if (user) {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('role, daycare_id')
+      .eq('id', user.id)
+      .single();
+
+    if (userData) {
+      userRole = userData.role as 'staff' | 'admin' | 'parent';
+
+      if (userData.role === 'parent') {
+        const { data: pcData } = await supabase
+          .from('parent_children')
+          .select('child_id')
+          .eq('parent_id', user.id);
+
+        const childIds = pcData?.map((r: { child_id: string }) => r.child_id) || [];
+        if (childIds.length > 0) {
+          const { data: kidsData } = await supabase
+            .from('children')
+            .select('id, full_name')
+            .in('id', childIds);
+
+          realChildren = kidsData as { id: string; full_name: string }[] || [];
+        }
+      } else if (userData.daycare_id) {
+        const { data: roomsData } = await supabase
+          .from('rooms')
+          .select('id')
+          .eq('daycare_id', userData.daycare_id);
+
+        const roomIds = roomsData?.map((r: { id: string }) => r.id) || [];
+        if (roomIds.length > 0) {
+          const { data: kidsData } = await supabase
+            .from('children')
+            .select('id, full_name')
+            .in('room_id', roomIds)
+            .eq('status', 'active')
+            .order('full_name');
+
+          realChildren = kidsData as { id: string; full_name: string }[] || [];
+        }
+      }
+    }
+  }
+
+  return <FeedClient posts={posts} userRole={userRole} realChildren={realChildren} />;
 }
