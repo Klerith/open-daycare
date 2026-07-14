@@ -138,7 +138,7 @@ export async function createChild(input: CreateChildInput): Promise<Child> {
 
   if (error) throw error;
 
-  revalidatePath('/kids');
+  revalidatePath('/staff/kids');
 
   return data as Child;
 }

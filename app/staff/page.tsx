@@ -1,9 +1,9 @@
 import { getPosts } from '@/app/_queries/posts';
-import { FeedClient } from '@/components/home/FeedClient';
+import { FeedContent } from '@/components/home/FeedContent';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 
-export default async function Home() {
+export default async function StaffPage() {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
@@ -62,5 +62,5 @@ export default async function Home() {
     }
   }
 
-  return <FeedClient posts={posts} userRole={userRole} realChildren={realChildren} />;
+  return <FeedContent posts={posts} userRole={userRole} realChildren={realChildren} />;
 }

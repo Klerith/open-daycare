@@ -39,7 +39,7 @@ export function KidCard({ child, parentCount = 0 }: KidCardProps) {
 
   return (
     <Link
-      href={`/kids/${child.id}`}
+      href={`/staff/kids/${child.id}`}
       className="kid-card-hover flex items-center gap-[14px] min-w-0 bg-card border border-line rounded-[18px] px-4 py-4 shadow-[0_4px_14px_-12px_rgba(120,90,60,0.5)] transition-[transform,border-color] duration-150 hover:border-[#F2A78E]"
     >
       <div

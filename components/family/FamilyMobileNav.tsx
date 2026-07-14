@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { SidebarContent } from '@/components/shared/Sidebar';
+import { FamilySidebarContent } from '@/components/family/FamilySidebar';
 import { CloseIcon, MenuIcon } from '@/components/shared/icons';
 
-interface MobileNavProps {
+interface FamilyMobileNavProps {
   pathname?: string;
 }
 
@@ -15,7 +15,7 @@ interface UserInfo {
   initial: string;
 }
 
-export function MobileNav({ pathname }: MobileNavProps) {
+export function FamilyMobileNav({ pathname }: FamilyMobileNavProps) {
   const [open, setOpen] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: '', role: '', initial: '' });
 
@@ -46,7 +46,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
 
       const name = profile?.full_name || user.email?.split('@')[0] || '';
       const initial = name.charAt(0).toUpperCase();
-      const roleLabel = profile?.role === 'staff' ? 'Personal' : profile?.role === 'admin' ? 'Administrador' : 'Familia';
+      const roleLabel = profile?.role === 'parent' ? 'Familia' : profile?.role === 'staff' ? 'Personal' : 'Administrador';
 
       setUserInfo({ name, role: roleLabel, initial });
     }
@@ -89,7 +89,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
             >
               <CloseIcon className="w-4 h-4" />
             </button>
-            <SidebarContent pathname={pathname} userInfo={userInfo} />
+            <FamilySidebarContent pathname={pathname} userInfo={userInfo} />
           </aside>
         </div>
       )}

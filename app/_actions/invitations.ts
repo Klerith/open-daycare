@@ -103,7 +103,7 @@ export async function createInvitation(input: {
     activationUrl,
   });
 
-  revalidatePath(`/kids/${input.childId}`);
+  revalidatePath(`/staff/kids/${input.childId}`);
 
   return {
     code,
