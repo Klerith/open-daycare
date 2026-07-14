@@ -1,5 +1,3 @@
-import { Sidebar } from '@/components/shared/Sidebar';
-import { MobileNav } from '@/components/shared/MobileNav';
 import { KidsPageClient } from '@/components/kids/KidsPageClient';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
@@ -34,18 +32,12 @@ export default async function KidsPage() {
   ]);
 
   return (
-    <div className="flex flex-1 min-h-screen bg-canvas">
-      <Sidebar pathname="/kids" />
-      <MobileNav pathname="/kids" />
-      <main className="flex-1 min-w-0 h-screen overflow-y-auto">
-        <div className="max-w-[880px] w-full mx-auto px-5 md:px-10 pt-16 md:pt-[34px] pb-20">
-          <KidsPageClient
-            groupedData={groupedData}
-            rooms={rooms}
-            daycareId={userData.daycare_id}
-          />
-        </div>
-      </main>
+    <div className="max-w-[880px] w-full mx-auto px-5 md:px-10 pt-16 md:pt-[34px] pb-20">
+      <KidsPageClient
+        groupedData={groupedData}
+        rooms={rooms}
+        daycareId={userData.daycare_id}
+      />
     </div>
   );
 }

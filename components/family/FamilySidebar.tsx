@@ -3,24 +3,28 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
-import { getActiveNav } from '@/app/_data/mock';
 import {
-  BellIcon,
   HomeIcon,
-  KidsIcon,
-  PlusIcon,
   SunIcon,
   UserIcon,
 } from '@/components/shared/icons';
 import { LogoutButton } from '@/components/shared/LogoutButton';
-import type { NavIcon } from '@/app/_data/mock';
 
-const navIcon: Record<NavIcon, typeof HomeIcon> = {
-  home: HomeIcon,
-  kids: KidsIcon,
-  bell: BellIcon,
-  user: UserIcon,
-};
+interface NavItem {
+  label: string;
+  icon: typeof HomeIcon;
+  href: string;
+}
+
+interface ActiveNavItem extends NavItem {
+  active: boolean;
+}
+
+const navItems: NavItem[] = [
+  { label: 'Feed', icon: HomeIcon, href: '/family' },
+  { label: 'Resumen del día', icon: HomeIcon, href: '/family/day-summary' },
+  { label: 'Mi cuenta', icon: UserIcon, href: '/family/account' },
+];
 
 interface UserInfo {
   name: string;
@@ -28,21 +32,26 @@ interface UserInfo {
   initial: string;
 }
 
-export function SidebarContent({
+function getActiveNav(pathname: string): ActiveNavItem[] {
+  return navItems.map((item) => ({
+    ...item,
+    active: pathname === item.href || (item.href !== '/family' && pathname.startsWith(item.href)),
+  }));
+}
+
+export function FamilySidebarContent({
   pathname,
-  onOpenNewPost,
   userInfo,
 }: {
   pathname?: string;
-  onOpenNewPost?: () => void;
   userInfo: UserInfo;
 }) {
-  const items = pathname ? getActiveNav(pathname) : [];
+  const items = pathname ? getActiveNav(pathname) : navItems.map((item): ActiveNavItem => ({ ...item, active: false }));
 
   return (
     <>
       <Link
-        href="/"
+        href="/family"
         className="flex items-center gap-[11px] pt-1 px-2 pb-[22px]"
       >
         <span className="w-[38px] h-[38px] rounded-[12px] bg-[linear-gradient(155deg,#F8C3A8,#F2937A)] flex items-center justify-center shrink-0 text-white">
@@ -58,34 +67,22 @@ export function SidebarContent({
         </span>
       </Link>
 
-      <button
-        type="button"
-        onClick={onOpenNewPost}
-        className="flex items-center justify-center gap-2 w-full p-3 rounded-[14px] text-white font-extrabold text-[14.5px] mb-[18px] bg-[linear-gradient(180deg,#F4977E,#EE8164)] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.75)]"
-      >
-        <PlusIcon className="w-[17px] h-[17px]" />
-        Nueva publicación
-      </button>
-
       <nav className="flex flex-col gap-1 flex-1">
-        {items.map((item) => {
-          const Icon = navIcon[item.icon];
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={
-                'flex items-center gap-3 py-[11px] px-3 rounded-[12px] text-[14.5px] ' +
-                (item.active
-                  ? 'bg-soft text-accent font-extrabold'
-                  : 'text-[#6E6359] font-semibold')
-              }
-            >
-              <Icon className="w-[19px] h-[19px]" />
-              {item.label}
-            </Link>
-          );
-        })}
+        {items.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className={
+              'flex items-center gap-3 py-[11px] px-3 rounded-[12px] text-[14.5px] ' +
+              (item.active
+                ? 'bg-soft text-accent font-extrabold'
+                : 'text-[#6E6359] font-semibold')
+            }
+          >
+            <item.icon className="w-[19px] h-[19px]" />
+            {item.label}
+          </Link>
+        ))}
       </nav>
 
       <div className="border-t border-line pt-[14px] mt-[10px]">
@@ -108,12 +105,10 @@ export function SidebarContent({
   );
 }
 
-export function Sidebar({
+export function FamilySidebar({
   pathname,
-  onOpenNewPost,
 }: {
   pathname?: string;
-  onOpenNewPost?: () => void;
 }) {
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: '', role: '', initial: '' });
 
@@ -135,7 +130,7 @@ export function Sidebar({
 
       const name = profile?.full_name || user.email?.split('@')[0] || '';
       const initial = name.charAt(0).toUpperCase();
-      const roleLabel = profile?.role === 'staff' ? 'Personal' : profile?.role === 'admin' ? 'Administrador' : 'Familia';
+      const roleLabel = profile?.role === 'parent' ? 'Familia' : profile?.role === 'staff' ? 'Personal' : 'Administrador';
 
       setUserInfo({ name, role: roleLabel, initial });
     }
@@ -145,7 +140,7 @@ export function Sidebar({
 
   return (
     <aside className="hidden md:flex flex-col w-[248px] shrink-0 bg-card border-r border-line sticky top-0 h-screen py-6 px-4">
-      <SidebarContent pathname={pathname} onOpenNewPost={onOpenNewPost} userInfo={userInfo} />
+      <FamilySidebarContent pathname={pathname} userInfo={userInfo} />
     </aside>
   );
 }
